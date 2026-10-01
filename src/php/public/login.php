@@ -78,23 +78,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <!-- Hero Section (hidden mobile, visible tablet+) -->
     <div class="auth-hero">
-        <div class="hero-logo">T</div>
-        <div class="hero-text">
-            <strong>Welcome Back</strong>
-            <span>Sign in to access your tests, track progress, and continue learning.</span>
-        </div>
-        <div class="hero-features">
-            <div class="hero-feature">
-                <svg viewBox="0 0 20 20" fill="currentColor"><path d="M16.7 5.3a1 1 0 0 0-1.4 0L8 12.6 4.7 9.3a1 1 0 0 0-1.4 1.4l4 4a1 1 0 0 0 1.4 0l8-8a1 1 0 0 0 0-1.4z"/></svg>
-                Real-time test monitoring
-            </div>
-            <div class="hero-feature">
-                <svg viewBox="0 0 20 20" fill="currentColor"><path d="M16.7 5.3a1 1 0 0 0-1.4 0L8 12.6 4.7 9.3a1 1 0 0 0-1.4 1.4l4 4a1 1 0 0 0 1.4 0l8-8a1 1 0 0 0 0-1.4z"/></svg>
-                Detailed performance analytics
-            </div>
-            <div class="hero-feature">
-                <svg viewBox="0 0 20 20" fill="currentColor"><path d="M16.7 5.3a1 1 0 0 0-1.4 0L8 12.6 4.7 9.3a1 1 0 0 0-1.4 1.4l4 4a1 1 0 0 0 1.4 0l8-8a1 1 0 0 0 0-1.4z"/></svg>
-                Seamless multi-device access
+        <!-- Liquid Wave & Particle Motion Graphics Canvas -->
+        <canvas id="heroFluidCanvas" class="hero-fluid-canvas" aria-hidden="true"></canvas>
+
+        <div class="hero-main-container">
+            <!-- Centered Professional Glassmorphic Card -->
+            <div class="hero-glass-card">
+                <div class="hero-logo">T</div>
+
+                <div class="hero-text">
+                    <strong>Welcome Back</strong>
+                    <span>Sign in to access your tests, track progress, and continue learning.</span>
+                </div>
+
+                <div class="hero-card-divider"></div>
+
+                <div class="hero-features">
+                    <div class="hero-feature">
+                        <svg viewBox="0 0 20 20" fill="currentColor"><path d="M16.7 5.3a1 1 0 0 0-1.4 0L8 12.6 4.7 9.3a1 1 0 0 0-1.4 1.4l4 4a1 1 0 0 0 1.4 0l8-8a1 1 0 0 0 0-1.4z"/></svg>
+                        <span>Real-time test monitoring</span>
+                    </div>
+                    <div class="hero-feature">
+                        <svg viewBox="0 0 20 20" fill="currentColor"><path d="M16.7 5.3a1 1 0 0 0-1.4 0L8 12.6 4.7 9.3a1 1 0 0 0-1.4 1.4l4 4a1 1 0 0 0 1.4 0l8-8a1 1 0 0 0 0-1.4z"/></svg>
+                        <span>Detailed performance analytics</span>
+                    </div>
+                    <div class="hero-feature">
+                        <svg viewBox="0 0 20 20" fill="currentColor"><path d="M16.7 5.3a1 1 0 0 0-1.4 0L8 12.6 4.7 9.3a1 1 0 0 0-1.4 1.4l4 4a1 1 0 0 0 1.4 0l8-8a1 1 0 0 0 0-1.4z"/></svg>
+                        <span>Seamless multi-device access</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -150,5 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <a href="guest.php" class="auth-footer-link">Have a guest link? Click here</a>
         </div>
     </div>
+
+    <script src="<?= ASSETS_URL ?>/js/hero-fluid.js"></script>
 </body>
 </html>
