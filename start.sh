@@ -1,8 +1,11 @@
 #!/bin/sh
 set -e
 
-PORT="${PORT:-8000}"
+PORT="${PORT:-8080}"
 echo "==> Starting Test Platform (Port: $PORT)..."
+
+# Enable concurrent worker processes in PHP CLI server
+export PHP_CLI_SERVER_WORKERS=4
 
 # 1. Run database initialization
 if [ -f "sql/init_db.php" ]; then
