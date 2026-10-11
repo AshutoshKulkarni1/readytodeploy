@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-PORT="${PORT:-8080}"
+PORT="${PORT:-8000}"
 echo "==> Starting Test Platform (Port: $PORT)..."
 
 # Enable concurrent worker processes in PHP CLI server
