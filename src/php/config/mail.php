@@ -44,7 +44,7 @@ define('MAIL_DRIVER', env('MAIL_DRIVER', 'smtp'));
 define('SMTP_HOST',     env('SMTP_HOST',     'smtp.gmail.com'));
 define('SMTP_PORT',     env('SMTP_PORT',     '587'));   // 587 for TLS, 465 for SSL
 define('SMTP_USERNAME', env('SMTP_USERNAME'));          // from .env
-define('SMTP_PASSWORD', env('SMTP_PASSWORD'));          // from .env — Gmail App Password
+define('SMTP_PASSWORD', str_replace(' ', '', (string)env('SMTP_PASSWORD', '')));          // from .env — Gmail App Password
 define('SMTP_FROM',     env('SMTP_FROM',     env('SMTP_USERNAME')));
 define('SMTP_FROM_NAME', env('SMTP_FROM_NAME', 'Test Platform'));
 

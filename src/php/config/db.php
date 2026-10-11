@@ -13,23 +13,31 @@ define('DB_ENV', env('DB_ENV', 'local')); // 'local' or 'production'
 // Change to your local timezone if different.
 date_default_timezone_set('Asia/Kolkata');
 
-if (DB_ENV === 'production') {
-    // Production settings — ALL values injected via environment (.env / platform vars)
-    define('DB_HOST', env('DB_HOST', '127.0.0.1'));
-    define('DB_PORT', env('DB_PORT', '3306'));
-    define('DB_NAME', env('DB_NAME', 'test_platform'));
-    define('DB_USER', env('DB_USER', 'root'));
-    define('DB_PASS', env('DB_PASS', ''));
-} else {
-    // Local settings — values come from .env so nothing sensitive is in source
-    define('DB_HOST', env('DB_HOST', '127.0.0.1'));
-    define('DB_PORT', env('DB_PORT', '3306'));
-    define('DB_NAME', env('DB_NAME', 'test_platform'));
-    define('DB_USER', env('DB_USER', 'root'));
-    define('DB_PASS', env('DB_PASS', ''));
+// Support Railway & Cloud MySQL providers:
+// Railway provides: MYSQLHOST, MYSQLPORT, MYSQLDATABASE, MYSQLUSER, MYSQLPASSWORD, or MYSQL_URL
+$mysqlUrl = env('MYSQL_URL');
+$urlHost = null; $urlPort = null; $urlUser = null; $urlPass = null; $urlDb = null;
+if (!empty($mysqlUrl)) {
+    $parsed = parse_url($mysqlUrl);
+    if ($parsed) {
+        $urlHost = $parsed['host'] ?? null;
+        $urlPort = isset($parsed['port']) ? (string)$parsed['port'] : null;
+        $urlUser = $parsed['user'] ?? null;
+        $urlPass = $parsed['pass'] ?? null;
+        $urlDb   = isset($parsed['path']) ? ltrim($parsed['path'], '/') : null;
+    }
 }
 
-define('PYTHON_API_URL', 'http://127.0.0.1:5000');
+define('DB_HOST', env('DB_HOST', env('MYSQLHOST', $urlHost ?? '127.0.0.1')));
+define('DB_PORT', env('DB_PORT', env('MYSQLPORT', $urlPort ?? '3306')));
+define('DB_NAME', env('DB_NAME', env('MYSQLDATABASE', $urlDb ?? 'test_platform')));
+define('DB_USER', env('DB_USER', env('MYSQLUSER', $urlUser ?? 'root')));
+define('DB_PASS', env('DB_PASS', env('MYSQLPASSWORD', $urlPass ?? '')));
+
+define(
+    'PYTHON_API_URL',
+    rtrim(env('PYTHON_API_URL', 'http://127.0.0.1:5000'), '/')
+);
 
 /*
  * BASE_URL: URL prefix for all redirects and links.
@@ -56,6 +64,7 @@ function getDB(): PDO {
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_EMULATE_PREPARES   => false,
+            PDO::MYSQL_ATTR_MULTI_STATEMENTS => true,
         ]);
     }
     return $pdo;

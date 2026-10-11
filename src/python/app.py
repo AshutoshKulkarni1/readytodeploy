@@ -31,20 +31,37 @@ from analysis.charts import (
 app = Flask(__name__)
 
 # ─── Database Connection ─────────────────────────────────────
-DB_CONFIG = {
-    "host": os.environ.get("DB_HOST", "127.0.0.1"),
-    "port": int(os.environ.get("DB_PORT", "3306")),
-    "database": os.environ.get("DB_NAME", "test_platform"),
-    "user": os.environ.get("DB_USER", "root"),
-    "password": os.environ.get("DB_PASS", ""),
-}
+def get_db_config():
+    mysql_url = os.environ.get("MYSQL_URL")
+    url_host = None
+    url_port = None
+    url_user = None
+    url_pass = None
+    url_db = None
+    if mysql_url:
+        from urllib.parse import urlparse
+        p = urlparse(mysql_url)
+        url_host = p.hostname
+        url_port = p.port
+        url_user = p.username
+        url_pass = p.password
+        if p.path and len(p.path) > 1:
+            url_db = p.path.lstrip("/")
+
+    return {
+        "host": os.environ.get("DB_HOST", os.environ.get("MYSQLHOST", url_host or "127.0.0.1")),
+        "port": int(os.environ.get("DB_PORT", os.environ.get("MYSQLPORT", url_port or 3306))),
+        "database": os.environ.get("DB_NAME", os.environ.get("MYSQLDATABASE", url_db or "test_platform")),
+        "user": os.environ.get("DB_USER", os.environ.get("MYSQLUSER", url_user or "root")),
+        "password": os.environ.get("DB_PASS", os.environ.get("MYSQLPASSWORD", url_pass or "")),
+    }
 
 
 def get_db():
     """Get a MySQL database connection."""
     import mysql.connector
 
-    conn = mysql.connector.connect(**DB_CONFIG)
+    conn = mysql.connector.connect(**get_db_config())
     conn.autocommit = True
     return conn
 

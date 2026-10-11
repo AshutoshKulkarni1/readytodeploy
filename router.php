@@ -83,6 +83,12 @@ if (strpos($requestUri, '/src/php/public/') === 0 || $requestUri === '/src/php/p
     $requestUri = substr($requestUri, strlen('/src/php/public')) ?: '/';
 }
 
+// ─── Aliases for login pages ────────────────────────────────
+if ($requestUri === '/student/login.php' || $requestUri === '/admin/login.php') {
+    header('Location: /login.php');
+    return true;
+}
+
 // ─── Clean URL: /admin/colleges/{id} → college_dashboard.php?id={id} ──
 // (SRS requirement: Dynamic College Dashboard at /admin/colleges/{college_id})
 $publicDir = __DIR__ . '/src/php/public';

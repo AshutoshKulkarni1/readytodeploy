@@ -177,6 +177,33 @@ SMTP_FROM_NAME=Test Platform
 
 ---
 
+## 🚆 Deploying on Railway
+
+1. **Create a New Project on [Railway](https://railway.com)**
+2. **Add a MySQL Database**:
+   - Click **+ New** → **Database** → **Add MySQL**.
+3. **Deploy from GitHub**:
+   - Click **+ New** → **GitHub Repo** → select `readytodeploy`.
+   - Railway will automatically detect the `Dockerfile` and `railway.json`.
+4. **Connect MySQL to Web App**:
+   - In the web service settings, under **Variables**, click **+ New Variable** → **Reference Variable** → select `MYSQL_URL` (or Railway connects variables automatically if in the same project).
+   - Add your mail variables in Railway dashboard:
+     ```ini
+     MAIL_DRIVER=smtp
+     SMTP_HOST=smtp.gmail.com
+     SMTP_PORT=587
+     SMTP_USERNAME=ivoryarm1@gmail.com
+     SMTP_PASSWORD=your-gmail-app-password
+     SMTP_FROM=ivoryarm1@gmail.com
+     SMTP_FROM_NAME=Test Platform
+     ```
+5. **Database Initialization**:
+   - The container automatically runs `sql/init_db.php` on first launch, creating all tables and seeding default colleges, courses, batches, and the default admin (`admin@testplatform.com` / `admin123`).
+6. **Generate Domain**:
+   - Go to Web Service **Settings** → **Networking** → **Generate Domain**.
+
+---
+
 ## 🗄️ Database Setup
 
 1. Create a database named `test_platform`

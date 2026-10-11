@@ -18,6 +18,14 @@ echo "🌱 Seeding test data...\n\n";
 
 try {
     $pdo = getDB();
+
+    $existing = (int)$pdo->query("SELECT COUNT(*) FROM students")->fetchColumn();
+    if ($existing > 0) {
+        echo "⚠️  Database already contains $existing students.\n";
+        echo "   Skipping seed to avoid duplicates. To re-seed, clear student/test tables first.\n";
+        exit(0);
+    }
+
     $pdo->beginTransaction();
 
     // ─── Password hash (student123) ─────────────────────────
@@ -260,7 +268,7 @@ try {
     }
 
     // ─── 7. SUBMISSIONS + ANSWERS ───────────────────────────
-    $stmtSub = $pdo->prepare("INSERT INTO submissions (student_id, test_id, status, started_at, submitted_at, total_marks_obtained, total_marks) VALUES (?, ?, 'evaluated', DATE_SUB(NOW(), INTERVAL 2 DAY), DATE_SUB(NOW(), INTERVAL 2 DAY), ?, ?)");
+    $stmtSub = $pdo->prepare("INSERT INTO submissions (student_id, test_id, status, evaluation_status, started_at, submitted_at, total_marks_obtained, total_marks, auto_score, total_score, evaluated_at) VALUES (?, ?, 'evaluated', 'evaluated', DATE_SUB(NOW(), INTERVAL 2 DAY), DATE_SUB(NOW(), INTERVAL 2 DAY), ?, ?, ?, ?, NOW())");
 
     $stmtAns = $pdo->prepare("INSERT INTO student_answers (submission_id, question_id, answer_json, marks_obtained, evaluated_at) VALUES (?, ?, ?, ?, NOW())");
 
@@ -300,7 +308,7 @@ try {
         }
 
         // Create submission
-        $stmtSub->execute([$sd['id'], $testId, $obtained, $totalMarks]);
+        $stmtSub->execute([$sd['id'], $testId, $obtained, $totalMarks, $obtained, $obtained]);
         $submissionId = $pdo->lastInsertId();
 
         // Insert answers
