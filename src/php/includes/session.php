@@ -5,7 +5,11 @@
 
 function startSession(): void {
     if (session_status() === PHP_SESSION_NONE) {
-        session_start();
+        $savePath = session_save_path();
+        if (empty($savePath) || !is_writable($savePath)) {
+            @session_save_path(sys_get_temp_dir());
+        }
+        @session_start();
     }
     // Regenerate session ID every 30 minutes to prevent fixation
     if (!isset($_SESSION['_last_regenerated']) || (time() - $_SESSION['_last_regenerated']) > 1800) {

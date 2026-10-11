@@ -64,7 +64,6 @@ function getDB(): PDO {
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_EMULATE_PREPARES   => false,
-            PDO::MYSQL_ATTR_MULTI_STATEMENTS => true,
         ]);
     }
     return $pdo;
@@ -83,14 +82,18 @@ if (!function_exists('__registerNotificationHandlers')) {
         if (!(error_reporting() & $errno)) return false; // @-suppressed or non-fatal noise
         $interesting = [E_ERROR, E_WARNING, E_USER_ERROR, E_USER_WARNING, E_RECOVERABLE_ERROR];
         if (!in_array($errno, $interesting, true)) return false;
-        if (function_exists('notifyAdmin')) {
-            notifyAdmin('system', 'PHP Error [' . $errno . ']', $errstr . ' — ' . basename($errfile) . ':' . $errline);
-        }
+        try {
+            if (function_exists('notifyAdmin')) {
+                notifyAdmin('system', 'PHP Error [' . $errno . ']', $errstr . ' — ' . basename($errfile) . ':' . $errline);
+            }
+        } catch (Throwable $ignored) {}
         return false; // keep default handler behavior
     });
     set_exception_handler(function (Throwable $e): void {
-        if (function_exists('notifyAdmin')) {
-            notifyAdmin('system', 'Uncaught Exception', $e->getMessage() . ' — ' . basename($e->getFile()) . ':' . $e->getLine());
-        }
+        try {
+            if (function_exists('notifyAdmin')) {
+                notifyAdmin('system', 'Uncaught Exception', $e->getMessage() . ' — ' . basename($e->getFile()) . ':' . $e->getLine());
+            }
+        } catch (Throwable $ignored) {}
     });
 }
